@@ -6,7 +6,7 @@
 
 Name:           %{dkms_name}-dkms
 Version:        %{dkms_version}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Out-of-tree DKMS driver for Realtek rtw89 WiFi chips
 License:        GPL-2.0-only OR BSD-3-Clause
 URL:            https://github.com/morrownr/rtw89
@@ -46,17 +46,9 @@ sed -i \
 install -d %{buildroot}%{_usrsrc}/%{dkms_name}-%{dkms_version}
 cp -a *.c *.h Makefile dkms.conf %{buildroot}%{_usrsrc}/%{dkms_name}-%{dkms_version}/
 
-# 2. Firmware -> /usr/lib/firmware/rtw89/
-install -d %{buildroot}/usr/lib/firmware/rtw89
-install -m 0644 firmware/*.bin %{buildroot}/usr/lib/firmware/rtw89/
-
-# 3. License file
-install -Dm 0644 firmware/LICENCE.rtlwifi_firmware.txt \
-    %{buildroot}%{_licensedir}/%{name}/LICENCE.rtlwifi_firmware.txt
-
-# 4. modprobe config -> /etc/modprobe.d/
+# 2. modprobe config -> /etc/modprobe.d/
 install -Dm 0644 rtw89.conf       %{buildroot}%{_sysconfdir}/modprobe.d/rtw89.conf
-install -Dm 0644 usb_storage.conf %{buildroot}%{_sysconfdir}/modprobe.d/usb_storage.conf
+# usb_storage.conf is only needed for kernels < 6.17, fedora 43 and 44 use kernel-6.19+.
 
 %post
 # Register with DKMS; --rpm_safe_upgrade removes old version on upgrade.
@@ -70,19 +62,21 @@ if [ "$1" -eq 0 ]; then
 fi
 
 %files
-%license %{_licensedir}/%{name}/LICENCE.rtlwifi_firmware.txt
 %dir %{_usrsrc}/%{dkms_name}-%{dkms_version}
 %{_usrsrc}/%{dkms_name}-%{dkms_version}/*.c
 %{_usrsrc}/%{dkms_name}-%{dkms_version}/*.h
 %{_usrsrc}/%{dkms_name}-%{dkms_version}/Makefile
 %{_usrsrc}/%{dkms_name}-%{dkms_version}/dkms.conf
-%{_prefix}/lib/firmware/rtw89/*.bin
 %config(noreplace) %{_sysconfdir}/modprobe.d/rtw89.conf
-%config(noreplace) %{_sysconfdir}/modprobe.d/usb_storage.conf
 
 %changelog
+* Sat Apr 18 2026 Doncho Gunchev <dgunchev@gmail.com> - 7.1-3
+As advised by a5a5aa555oo:
+- Drop firmware files: realtek-firmware provided by Fedora is up-to-date
+- Drop usb_storage.conf: not needed on kernel 6.17+, F43 shipped with 6.17
+
 * Sat Apr 18 2026 Doncho Gunchev <dgunchev@gmail.com> - 7.1-2
 - Cleanup, simplify.
 
-* Fri Apr 17 2026 Claude Opus <claude@claude.ai> - 7.1-1
+* Fri Apr 17 2026 Claude Sonnet <claude@claude.ai> - 7.1-1
 - Initial package based on morrownr/rtw89 version 7.1
