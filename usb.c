@@ -417,10 +417,6 @@ static int rtw89_usb_ops_tx_write(struct rtw89_dev *rtwdev,
 
 	le32p_replace_bits(&txdesc->dword0, 1, RTW89_TXWD_BODY0_STF_MODE);
 
-	if (rtwdev->chip->chip_id == RTL8922A)
-		le32p_replace_bits(&txdesc->dword0, desc_info->en_wd_info,
-				   BE_TXD_BODY0_WD_PAGE); /* not a typo */
-
 	skb_data = RTW89_TX_SKB_CB(skb);
 	if (tx_req->desc_info.sn)
 		skb_data->tx_rpt_sn = tx_req->desc_info.sn;
