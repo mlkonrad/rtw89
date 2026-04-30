@@ -108,7 +108,6 @@ endif
 obj-m += rtw89_8922au_git.o
 rtw89_8922au_git-objs := rtw8922au.o
 
-
 ifneq ($(CONFIG_PCI),)
 obj-m += rtw89_pci_git.o
 rtw89_pci_git-y := pci.o pci_be.o

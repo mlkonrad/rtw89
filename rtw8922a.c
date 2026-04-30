@@ -202,7 +202,7 @@ static const struct rtw89_dle_mem rtw8922a_dle_mem_usb2[] = {
 			   &rtw89_mac_size.ple_size6_v1, &rtw89_mac_size.wde_qt7_v1,
 			   &rtw89_mac_size.wde_qt7_v1, &rtw89_mac_size.ple_qt12_v1,
 			   &rtw89_mac_size.ple_qt13_v1, &rtw89_mac_size.ple_rsvd_qt2,
-			   &rtw89_mac_size.rsvd0_size5, &rtw89_mac_size.rsvd1_size0},/// TODO what about dle_input?
+			   &rtw89_mac_size.rsvd0_size5, &rtw89_mac_size.rsvd1_size0},
 	[RTW89_QTA_DBCC] = {RTW89_QTA_DBCC, &rtw89_mac_size.wde_size8_v1,
 			   &rtw89_mac_size.ple_size7_v1, &rtw89_mac_size.wde_qt8_v1,
 			   &rtw89_mac_size.wde_qt8_v1, &rtw89_mac_size.ple_qt14_v1,

@@ -1613,7 +1613,6 @@ static bool rtw89_ops_can_activate_links(struct ieee80211_hw *hw,
 	rtwvif->ml_trans = trans;
 
 	return true;
-	return rtw89_can_work_on_links(rtwdev, vif, active_links);
 }
 #endif
 
