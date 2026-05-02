@@ -5979,6 +5979,30 @@ void rtw89_check_quirks(struct rtw89_dev *rtwdev, const struct dmi_system_id *qu
 }
 EXPORT_SYMBOL(rtw89_check_quirks);
 
+static void rtw89_led_start(struct rtw89_dev *rtwdev)
+{
+	const struct rtw89_led_regs *regs = rtwdev->chip->led_regs;
+
+	if (!regs)
+		return;
+
+	/* Only set GPIO8 pinmux to WL_LED function — skip LED_CFG which
+	 * interferes with rfkill GPIO9 polling on this USB variant.
+	 */
+	rtw89_write32_mask(rtwdev, regs->pinmux.addr,
+			   regs->pinmux.mask, regs->pinmux.data);
+}
+
+static void rtw89_led_stop(struct rtw89_dev *rtwdev)
+{
+	const struct rtw89_led_regs *regs = rtwdev->chip->led_regs;
+
+	if (!regs)
+		return;
+
+	rtw89_write32_mask(rtwdev, regs->led_cfg, B_AX_LED2_MODE_MASK, 0);
+}
+
 int rtw89_core_start(struct rtw89_dev *rtwdev)
 {
 	bool no_bbmcu = !rtwdev->chip->bbmcu_nr;
@@ -6716,6 +6740,7 @@ void rtw89_core_rfkill_poll(struct rtw89_dev *rtwdev, bool force)
 	wiphy_rfkill_set_hw_state(rtwdev->hw->wiphy, blocked);
 }
 
+
 int rtw89_chip_info_setup(struct rtw89_dev *rtwdev)
 {
 	struct rtw89_efuse *efuse = &rtwdev->efuse;
@@ -6927,6 +6952,7 @@ static int rtw89_core_register_hw(struct rtw89_dev *rtwdev)
 	}
 
 	rtw89_rfkill_polling_init(rtwdev);
+	rtw89_led_start(rtwdev);
 
 	return 0;
 
@@ -6941,6 +6967,7 @@ static void rtw89_core_unregister_hw(struct rtw89_dev *rtwdev)
 	struct ieee80211_hw *hw = rtwdev->hw;
 
 	rtw89_rfkill_polling_deinit(rtwdev);
+	rtw89_led_stop(rtwdev);
 	ieee80211_unregister_hw(hw);
 }
 

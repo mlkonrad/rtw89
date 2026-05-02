@@ -576,6 +576,16 @@ static const struct rtw89_rfkill_regs rtw8852a_rfkill_regs = {
 		 0x0},
 };
 
+/* Hardware WL_LED mode: chip blinks LED on GPIO8 automatically during WiFi
+ * TX/RX. Uses R_AX_LED_CFG (0x004C) — no R_AX_GPIO_EXT_CTRL writes, which
+ * were interfering with rfkill GPIO9 polling.
+ */
+static const struct rtw89_led_regs rtw8852a_led_regs = {
+	.pinmux  = {R_AX_GPIO8_15_FUNC_SEL, B_AX_PINMUX_GPIO8_FUNC_SEL_MASK, 0x6},
+	.func_en = {R_AX_LED_CTRL, B_AX_LED_WL_EN, 1},
+	.led_cfg = R_AX_LED_CFG,
+};
+
 static const struct rtw89_dig_regs rtw8852a_dig_regs = {
 	.seg0_pd_reg = R_SEG0R_PD,
 	.pd_lower_bound_mask = B_SEG0R_PD_LOWER_BOUND_MSK,
@@ -2454,6 +2464,7 @@ const struct rtw89_chip_info rtw8852a_chip_info = {
 	.bss_clr_map_reg	= R_BSS_CLR_MAP,
 	.rfkill_init		= &rtw8852a_rfkill_regs,
 	.rfkill_get		= {R_AX_GPIO_EXT_CTRL, B_AX_GPIO_IN_9},
+	.led_regs		= NULL, /* LED disabled: R_AX_LED_CFG interferes with rfkill on USB */
 	.btc_sb			= {{{R_AX_SCOREBOARD, R_AX_SCOREBOARD},}},
 	.dma_ch_mask		= 0,
 	.edcca_regs		= &rtw8852a_edcca_regs,

@@ -4545,6 +4545,12 @@ struct rtw89_rfkill_regs {
 	struct rtw89_reg3_def mode;
 };
 
+struct rtw89_led_regs {
+	struct rtw89_reg3_def pinmux;  /* GPIO function select for WL_LED mode */
+	struct rtw89_reg3_def func_en; /* LED function enable register */
+	u32 led_cfg;                   /* R_AX_LED_CFG: hardware LED control */
+};
+
 struct rtw89_sb_regs {
 	struct {
 		u32 cfg;
@@ -4772,6 +4778,7 @@ struct rtw89_chip_info {
 	u32 bss_clr_map_reg;
 	const struct rtw89_rfkill_regs *rfkill_init;
 	struct rtw89_reg_def rfkill_get;
+	const struct rtw89_led_regs *led_regs;
 	struct rtw89_sb_regs btc_sb;
 	u32 dma_ch_mask;
 	const struct rtw89_edcca_regs *edcca_regs;
